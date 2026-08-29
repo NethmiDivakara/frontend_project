@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from "react-router-dom";
 
 export  function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -83,6 +84,14 @@ export  function Login() {
           >
             Log In
           </Button>
+
+                    <p className="text-center text-sm text-neutral-500">
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="font-semibold text-neutral-900 hover:underline">
+              Register
+            </Link>
+          </p>
+
         </form>
       </div>
     </div>
