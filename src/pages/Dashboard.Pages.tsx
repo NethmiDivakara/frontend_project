@@ -1,5 +1,5 @@
 import {Button} from '@/components/ui/button'
-import { useHealthCheck } from '@/hooks/HealthCheck.Hooks'
+import { useHealthCheck } from '@/hooks/UseHealthCheck.Hooks'
 
 
 export default function Dashboard(){

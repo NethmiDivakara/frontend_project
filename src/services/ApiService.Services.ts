@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import config from "./ApiConfig.Services";
-import type { AxiosObject } from "../lib/Axios.Lib";
+import type { AxiosObject } from "../types/Axios.Types";
 
 const API_TIMEOUT_MS = 10000;
 

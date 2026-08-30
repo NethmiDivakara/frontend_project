@@ -1,92 +1,29 @@
-import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useRegister } from "../hooks/UseRegister.Hooks";
 
-
-type FormErrors = Partial<{
-  firstName: string;
-  lastName: string;
-  email: string;
-  dob: string;
-  phoneNumber: string;
-  password: string;
-  confirmPassword: string;
-}>;
 
 export function Register() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [dob, setDob] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
- 
-  const hasNoNumbers = (value: string) => !/\d/.test(value);
-  const isExactlyTenDigits = (value: string) => /^\d{10}$/.test(value);
- 
-  const validate = (): FormErrors => {
-    const next: FormErrors = {};
- 
-    if (!firstName.trim()) {
-      next.firstName = "First name is required.";
-    } else if (!hasNoNumbers(firstName)) {
-      next.firstName = "First name cannot contain numbers.";
-    }
- 
-    if (!lastName.trim()) {
-      next.lastName = "Last name is required.";
-    } else if (!hasNoNumbers(lastName)) {
-      next.lastName = "Last name cannot contain numbers.";
-    }
- 
-    if (!email.trim()) {
-      next.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      next.email = "Enter a valid email address.";
-    }
- 
-    if (!dob) {
-      next.dob = "Birthday is required.";
-    }
- 
-    if (!phoneNumber.trim()) {
-      next.phoneNumber = "Phone number is required.";
-    } else if (!isExactlyTenDigits(phoneNumber)) {
-      next.phoneNumber = "Phone number must be exactly 10 digits.";
-    }
- 
-    if (!password) {
-      next.password = "Password is required.";
-    } else if (password.length < 8) {
-      next.password = "Password must be at least 8 characters.";
-    }
- 
-    if (!confirmPassword) {
-      next.confirmPassword = "Please confirm your password.";
-    } else if (password !== confirmPassword) {
-      next.confirmPassword = "Passwords do not match.";
-    }
- 
-    return next;
-  };
- 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
- 
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
- 
-    console.log({ firstName, lastName, email, password, dob, phoneNumber });
-  };
+  const {
+    values,
+    setName,
+    setEmail,
+    setPassword,
+    setConfirmPassword,
+    setPhoneNumber,
+    setAddress,
+    showPassword,
+    setShowPassword,
+    showConfirmPassword,
+    setShowConfirmPassword,
+    errors,
+    isSubmitting,
+    submitError,
+    successMessage,
+    handleSubmit,
+  } = useRegister();
  
   return (
 
@@ -112,60 +49,24 @@ export function Register() {
         </div>
  
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <label htmlFor="firstName" className="text-sm font-medium text-neutral-700">
-                First Name
-              </label>
-              <Input
-                id="firstName"
-                type="text"
-                placeholder="Enter your first name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                aria-invalid={!!errors.firstName}
-                className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
-              />
-              {errors.firstName && (
-                <p className="px-2 text-xs text-red-500">{errors.firstName}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="lastName" className="text-sm font-medium text-neutral-700">
-                Last Name
-              </label>
-              <Input
-                id="lastName"
-                type="text"
-                placeholder="Enter your last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                aria-invalid={!!errors.lastName}
-                className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
-              />
-              {errors.lastName && (
-                <p className="px-2 text-xs text-red-500">{errors.lastName}</p>
-              )}
-            </div>
+          
+
+ <div className="space-y-2">
+            <label htmlFor="name" className="text-sm font-medium text-neutral-700">
+              Name
+            </label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Enter your name"
+              value={values.name}
+              onChange={(e) => setName(e.target.value)}
+              aria-invalid={!!errors.name}
+              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+            />
+            {errors.name && <p className="px-2 text-xs text-red-500">{errors.name}</p>}
           </div>
  
-          <div className="space-y-2">
-            <label htmlFor="birthday" className="text-sm font-medium text-neutral-700">
-              Birthday
-            </label>
-            <div className="relative">
-              <Input
-                id="birthday"
-                type="date"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                aria-invalid={!!errors.dob}
-                className="h-12 rounded-full border-0 bg-neutral-50 px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
-              />
-              
-            </div>
-            {errors.dob && <p className="px-2 text-xs text-red-500">{errors.dob}</p>}
-          </div>
  
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-neutral-700">
@@ -175,7 +76,7 @@ export function Register() {
               id="email"
               type="email"
               placeholder="Enter your email"
-              value={email}
+              value={values.email}
               onChange={(e) => setEmail(e.target.value)}
               aria-invalid={!!errors.email}
               className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
@@ -191,13 +92,31 @@ export function Register() {
               id="phoneNumber"
               type="tel"
               placeholder="Enter your phone number"
-              value={phoneNumber}
+              value={values.phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               aria-invalid={!!errors.phoneNumber}
               className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
             />
             {errors.phoneNumber && (
               <p className="px-2 text-xs text-red-500">{errors.phoneNumber}</p>
+            )}
+          </div>
+
+           <div className="space-y-2">
+            <label htmlFor="address" className="text-sm font-medium text-neutral-700">
+              Address
+            </label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="123 Training Blvd, Silicon Valley, CA"
+              value={values.address}
+              onChange={(e) => setAddress(e.target.value)}
+              aria-invalid={!!errors.address}
+              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+            />
+            {errors.address && (
+              <p className="px-2 text-xs text-red-500">{errors.address}</p>
             )}
           </div>
  
@@ -210,7 +129,7 @@ export function Register() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
-                value={password}
+                value={values.password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
                 className="h-12 rounded-full border-0 bg-neutral-50 px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
@@ -242,12 +161,12 @@ export function Register() {
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="********"
-                value={confirmPassword}
+                value={values.confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 aria-invalid={!!errors.confirmPassword}
                 className="h-12 rounded-full border-0 bg-neutral-50 px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
               />
-              <button
+                            <button
                 type="button"
                 onClick={() => setShowConfirmPassword((v) => !v)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
@@ -264,19 +183,26 @@ export function Register() {
               <p className="px-2 text-xs text-red-500">{errors.confirmPassword}</p>
             )}
           </div>
+
+                    {successMessage && (
+            <p className="text-center text-sm font-medium text-lime-600">
+              {successMessage}
+            </p>
+          )}
+ 
+          {submitError && (
+            <p className="text-center text-sm text-red-500">{submitError}</p>
+          )}
  
           <Button
             type="submit"
-            className="h-12 w-full rounded-full bg-lime-300 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400"
+            disabled={isSubmitting}
+            className="h-12 w-full rounded-full bg-lime-300 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Sign Up
+            {isSubmitting ? "Signing Up..." : "Sign Up"}
           </Button>
- 
-       
-
         </form>
       </div>
     </div>
   );
 }
- 

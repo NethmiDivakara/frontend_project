@@ -1,19 +1,23 @@
-import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
+import { useLogin } from "../hooks/Uselogin.Hooks";
 
-export  function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, password, rememberMe });
-  };
+export function Login() {
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    rememberMe,
+    setRememberMe,
+    showPassword,
+    setShowPassword,
+    isSubmitting,
+    submitError,
+    handleSubmit,
+  } = useLogin();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-100 p-6">
@@ -78,11 +82,16 @@ export  function Login() {
             </button>
           </div>
 
+                  {submitError && (
+            <p className="text-center text-sm text-red-500">{submitError}</p>
+          )}
+ 
           <Button
             type="submit"
-            className="h-12 w-full rounded-full bg-lime-300 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400"
+            disabled={isSubmitting}
+            className="h-12 w-full rounded-full bg-lime-300 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Log In
+            {isSubmitting ? "Logging In..." : "Log In"}
           </Button>
 
                     <p className="text-center text-sm text-neutral-500">
