@@ -1,13 +1,8 @@
 import { callApi } from './ApiService.Services';
 import type { AxiosObject } from '../types/Axios.Types';
-import type {
-  LoginPayload,
-  LoginResponse,
-  RegisterPayload,
-  RegisterResponse,
-} from '../types/AuthDetails';
+import type { LoginPayload,LoginResponse,RegisterPayload,RegisterResponse,} from '../types/AuthDetails';
 
-export async function login(payload: LoginPayload): Promise<LoginResponse> {
+export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
   const apiObject: AxiosObject = {
     method: "POST",
     endpoint: "auth/login",

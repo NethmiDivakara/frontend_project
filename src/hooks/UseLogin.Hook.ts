@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/AuthConfig.Service";
+import { loginUser } from "../services/AuthConfig.Service";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export function useLogin() {
 
     setIsSubmitting(true);
     try {
-      await login({ email, password });
+      await loginUser({ email, password });
       navigate("/dashboard");
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Login failed.");

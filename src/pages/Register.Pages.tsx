@@ -2,7 +2,9 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import {Label} from "../components/ui/label";
 import { useRegister } from "../hooks/UseRegister.Hooks";
+import backgroundImg from "@/assets/background.jpg";
 
 
 export function Register() {
@@ -26,35 +28,34 @@ export function Register() {
   } = useRegister();
  
   return (
-
-
-    <div className="flex min-h-screen items-center justify-center bg-neutral-100 p-6">
-      <div className="w-full max-w-md rounded-[2.5rem] bg-white p-8 shadow-xl">
+    <div
+      className="flex min-h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat p-6"
+      style={{ backgroundImage: `url(${backgroundImg})` }}
+    >
+      <div className="w-full max-w-xl rounded-[2.5rem] p-8 shadow-xl bg-[#5b4a9a]/60 backdrop-blur-md">
      
 
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+        <div className="mb-4 text-center">
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-100">
             Get Started Now
           </h1>
                 <Link
             to="/login"
-            className="flex items-center justify-center gap-1 text-sm font-semibold text-neutral-700 hover:text-neutral-900"
+            className="flex items-center justify-center gap-1 text-sm font-semibold text-neutral-200 hover:text-neutral-100"
           >
             <ArrowLeft className="h-4 w-4" />
             Already have an account? Log In
           </Link>
-          <p className="mt-1 text-sm text-neutral-400">
-            Create an account or log in to explore about our app
-          </p>
+         
         </div>
  
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
           
-
+<div className="grid grid-cols-2 gap-4 ">
  <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium text-neutral-700">
+            <Label htmlFor="name" className="text-sm font-medium text-neutral-200">
               Name
-            </label>
+            </Label>
             <Input
               id="name"
               type="text"
@@ -62,32 +63,14 @@ export function Register() {
               value={values.name}
               onChange={(e) => setName(e.target.value)}
               aria-invalid={!!errors.name}
-              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+              className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
             />
             {errors.name && <p className="px-2 text-xs text-red-500">{errors.name}</p>}
           </div>
- 
- 
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-neutral-700">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={values.email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-invalid={!!errors.email}
-              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
-            />
-            {errors.email && <p className="px-2 text-xs text-red-500">{errors.email}</p>}
-          </div>
- 
-          <div className="space-y-2">
-            <label htmlFor="phoneNumber" className="text-sm font-medium text-neutral-700">
+                    <div className="space-y-2">
+            <Label htmlFor="phoneNumber" className="text-sm font-medium text-neutral-200">
               Phone Number
-            </label>
+            </Label>
             <Input
               id="phoneNumber"
               type="tel"
@@ -95,25 +78,46 @@ export function Register() {
               value={values.phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               aria-invalid={!!errors.phoneNumber}
-              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+              className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
             />
             {errors.phoneNumber && (
               <p className="px-2 text-xs text-red-500">{errors.phoneNumber}</p>
             )}
           </div>
+          </div>
+ 
+ 
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium text-neutral-200">
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={values.email}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={!!errors.email}
+              className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
+            />
+            {errors.email && <p className="px-2 text-xs text-red-500">{errors.email}</p>}
+          </div>
+           
+ 
+
 
            <div className="space-y-2">
-            <label htmlFor="address" className="text-sm font-medium text-neutral-700">
+            <Label htmlFor="address" className="text-sm font-medium text-neutral-200">
               Address
-            </label>
+            </Label>
             <Input
               id="address"
               type="text"
-              placeholder="123 Training Blvd, Silicon Valley, CA"
+              placeholder="Enter your address"
               value={values.address}
               onChange={(e) => setAddress(e.target.value)}
               aria-invalid={!!errors.address}
-              className="h-12 rounded-full border-0 bg-neutral-50 px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+              className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
             />
             {errors.address && (
               <p className="px-2 text-xs text-red-500">{errors.address}</p>
@@ -121,9 +125,9 @@ export function Register() {
           </div>
  
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-neutral-700">
+             <Label htmlFor="password" className="text-sm font-medium text-neutral-200">
               Set Password
-            </label>
+            </Label>
             <div className="relative">
               <Input
                 id="password"
@@ -132,12 +136,14 @@ export function Register() {
                 value={values.password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
-                className="h-12 rounded-full border-0 bg-neutral-50 px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+                className="h-12 rounded-full border-0 bg-white px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
               />
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                className="absolute inset-y-0 right-2 my-auto h-8 w-8 text-neutral-400 hover:bg-transparent hover:text-neutral-600"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -145,17 +151,17 @@ export function Register() {
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-              </button>
-            </div>
+              </Button>
+             </div>
             {errors.password && (
               <p className="px-2 text-xs text-red-500">{errors.password}</p>
             )}
           </div>
  
           <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="text-sm font-medium text-neutral-700">
+            <Label htmlFor="confirmPassword" className="text-sm font-medium text-neutral-200">
               Confirm Password
-            </label>
+            </Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
@@ -164,12 +170,14 @@ export function Register() {
                 value={values.confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 aria-invalid={!!errors.confirmPassword}
-                className="h-12 rounded-full border-0 bg-neutral-50 px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-lime-300"
+                className="h-12 rounded-full border-0 bg-white px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
               />
-                            <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowConfirmPassword((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                className="absolute inset-y-0 right-2 my-auto h-8 w-8 text-neutral-400 hover:bg-transparent hover:text-neutral-600"
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 {showConfirmPassword ? (
@@ -177,15 +185,16 @@ export function Register() {
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-              </button>
-            </div>
+              </Button>
+              </div>
+           
             {errors.confirmPassword && (
               <p className="px-2 text-xs text-red-500">{errors.confirmPassword}</p>
             )}
           </div>
-
-                    {successMessage && (
-            <p className="text-center text-sm font-medium text-lime-600">
+ 
+          {successMessage && (
+            <p className="text-center text-sm font-medium text-green-400">
               {successMessage}
             </p>
           )}
@@ -197,7 +206,7 @@ export function Register() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-12 w-full rounded-full bg-lime-300 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-12 w-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 text-base font-semibold text-neutral-900 shadow-none hover:from-sky-600 hover:to-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? "Signing Up..." : "Sign Up"}
           </Button>
@@ -206,3 +215,4 @@ export function Register() {
     </div>
   );
 }
+ 
