@@ -24,10 +24,13 @@ export function Login() {
   } = useLogin();
 
   return (
-    <div
-      className="flex min-h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat p-6"
-      style={{ backgroundImage: `url(${backgroundImg})` }}
-    >
+      <div className="relative flex min-h-screen w-full items-center justify-center p-6">
+     
+      <img
+        src={backgroundImg}
+        alt="background"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       <div className="grid w-full max-w-4xl overflow-hidden rounded-[2.5rem] shadow-xl md:grid-cols-2">
       
   <div className="flex flex-col justify-center bg-[#5b4a9a]/60 p-8 backdrop-blur-md md:p-12">
@@ -121,12 +124,13 @@ export function Login() {
 
         </form>
         </div>     
-        <div
-          className="hidden bg-cover bg-center md:block"
-          style={{ backgroundImage: `url(${sidePanelImg})` }}
-          role="img"
-          aria-label="Decorative"
-        />
+ <div className="relative hidden md:block">
+  <img
+    src={sidePanelImg}
+    alt="side image" 
+    className="absolute inset-0 h-full w-full object-cover"
+  />
+</div>
       </div>
     </div>
   );

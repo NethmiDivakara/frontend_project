@@ -24,8 +24,18 @@ export function useLogin() {
 
     setIsSubmitting(true);
     try {
-      await loginUser({ email, password });
-      navigate("/dashboard");
+      const response = await loginUser({ email, password });
+      const { user, auth } = response.data;
+
+      
+      localStorage.setItem("access_token", auth.access_token);
+      localStorage.setItem("refresh_token", auth.refresh_token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+
+     if (user) {
+        navigate("/dashboard");
+     }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Login failed.");
     } finally {

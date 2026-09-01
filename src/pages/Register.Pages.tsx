@@ -1,10 +1,11 @@
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import {Label} from "../components/ui/label";
 import { useRegister } from "../hooks/UseRegister.Hooks";
 import backgroundImg from "@/assets/background.jpg";
+import sidePanelImg from "@/assets/sidepic.jpg";
 
 
 export function Register() {
@@ -28,31 +29,25 @@ export function Register() {
   } = useRegister();
  
   return (
-    <div
-      className="flex min-h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat p-6"
-      style={{ backgroundImage: `url(${backgroundImg})` }}
-    >
-      <div className="w-full max-w-xl rounded-[2.5rem] p-8 shadow-xl bg-[#5b4a9a]/60 backdrop-blur-md">
-     
+   <div className="relative flex min-h-screen w-full items-center justify-center p-5">
+      <img
+        src={backgroundImg}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+<div className="grid w-full max-w-6xl overflow-hidden rounded-[2.5rem] shadow-xl md:grid-cols-2">
+        <div className="flex flex-col justify-center bg-[#5b4a9a]/60 p-7 backdrop-blur-md md:p-12">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold tracking-tight text-neutral-100">
+              Get Started Now
+            </h1>
 
-        <div className="mb-4 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-100">
-            Get Started Now
-          </h1>
-                <Link
-            to="/login"
-            className="flex items-center justify-center gap-1 text-sm font-semibold text-neutral-200 hover:text-neutral-100"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Already have an account? Log In
-          </Link>
-         
-        </div>
+          </div>
  
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
           
 <div className="grid grid-cols-2 gap-4 ">
- <div className="space-y-2">
+ <div className="space-y-1.5">
             <Label htmlFor="name" className="text-sm font-medium text-neutral-200">
               Name
             </Label>
@@ -67,7 +62,7 @@ export function Register() {
             />
             {errors.name && <p className="px-2 text-xs text-red-500">{errors.name}</p>}
           </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
             <Label htmlFor="phoneNumber" className="text-sm font-medium text-neutral-200">
               Phone Number
             </Label>
@@ -78,7 +73,7 @@ export function Register() {
               value={values.phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               aria-invalid={!!errors.phoneNumber}
-              className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="h-12 rounded-full border-0 bg-white px-4 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
             />
             {errors.phoneNumber && (
               <p className="px-2 text-xs text-red-500">{errors.phoneNumber}</p>
@@ -88,7 +83,7 @@ export function Register() {
  
  
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-neutral-200">
+            <Label htmlFor="email" className="text-sm font-medium text-neutral-200 ">
               Email
             </Label>
             <Input
@@ -180,39 +175,52 @@ export function Register() {
                 className="absolute inset-y-0 right-2 my-auto h-8 w-8 text-neutral-400 hover:bg-transparent hover:text-neutral-600"
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
-                {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </Button>
+{showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
-           
-            {errors.confirmPassword && (
-              <p className="px-2 text-xs text-red-500">{errors.confirmPassword}</p>
+              {errors.confirmPassword && (
+                <p className="px-2 text-xs text-red-500">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            {successMessage && (
+              <p className="text-center text-sm font-medium text-green-400">
+                {successMessage}
+              </p>
             )}
-          </div>
+
+            {submitError && (
+              <p className="text-center text-sm text-red-500">{submitError}</p>
+            )}
+
  
-          {successMessage && (
-            <p className="text-center text-sm font-medium text-green-400">
-              {successMessage}
-            </p>
-          )}
- 
-          {submitError && (
-            <p className="text-center text-sm text-red-500">{submitError}</p>
-          )}
- 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="h-12 w-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 text-base font-semibold text-neutral-900 shadow-none hover:from-sky-600 hover:to-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSubmitting ? "Signing Up..." : "Sign Up"}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-12 w-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 text-base font-semibold text-neutral-900 shadow-none hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Signing Up..." : "Sign Up"}
+            </Button>
+                                <p className="text-center text-sm text-neutral-300">
+            Already have an account? {" "}
+            <Link to="/login" className="font-semibold text-neutral-100 hover:underline">
+              <u>Login</u>
+            </Link>
+          </p>
+          </form>
+        </div>
+        <div className="relative hidden md:block">
+          <img
+            src={sidePanelImg}
+            alt="side image"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );
 }
- 

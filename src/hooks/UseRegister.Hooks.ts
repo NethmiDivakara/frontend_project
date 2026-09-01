@@ -25,7 +25,7 @@ export function useRegister() {
   const [submitError, setSubmitError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setSubmitError("");
     setSuccessMessage("");
@@ -46,9 +46,9 @@ export function useRegister() {
       return;
     }
 
-setIsSubmitting(true);
+    setIsSubmitting(true);
     try {
-      await register({
+      const responseOfRegister = await register({
         name: name.trim(),
         email,
         password,
@@ -56,8 +56,18 @@ setIsSubmitting(true);
         phone: phoneNumber,
         address,
       });
+
+      const { user, auth } = responseOfRegister.data;
+
+      localStorage.setItem("access_token", auth.access_token);
+      localStorage.setItem("refresh_token", auth.refresh_token);
+      localStorage.setItem("user", JSON.stringify(user));
+
       setSuccessMessage("Successful registration!");
-      setTimeout(() => navigate("/login"), 1500);
+
+      if (user) {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {

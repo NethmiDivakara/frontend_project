@@ -5,7 +5,25 @@ import type { AxiosObject } from "../types/Axios.Types";
 
 const API_TIMEOUT_MS = 10000;
 
-export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
+export type ApiError = {
+  success: false;
+  status: number;
+  data: unknown;
+  message: string;
+};
+
+export function isApiError(err: unknown): err is ApiError {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "success" in err &&
+    (err as { success: unknown }).success === false
+  );
+}
+
+export const callApi = async <T extends { success: boolean; message: string }>(
+  apiObject: AxiosObject
+): Promise<T> => {
   const method = apiObject.method 
   ? apiObject.method.toLowerCase() 
   : "get";
@@ -50,21 +68,31 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
       default:
         throw new Error(`Unsupported HTTP method: ${apiObject.method}`);
     }
+    if (!response.data.success) {
+      throw {
+        success: false,
+        status: response.status,
+        data: response.data,
+        message: response.data.message || "Request failed.",
+      } satisfies ApiError;
+    }
 
-    return response.data;
+     return response.data;
   } catch (error: unknown) {
+    if (isApiError(error)) {
+      throw error; 
+    }
 
     if (axios.isAxiosError<{ message?: string }>(error)) {
-      const axiosError = error;
-      const status = axiosError.response?.status ?? 500;
-      const data = axiosError.response?.data;
+      const status = error.response?.status ?? 500;
+      const data = error.response?.data;
 
       throw {
         success: false,
         status,
         data,
-        message: data?.message || axiosError.message || "Something went wrong",
-      };
+        message: data?.message || error.message || "Something went wrong",
+      } satisfies ApiError;
     }
 
     throw {
@@ -72,6 +100,6 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
       status: 500,
       data: null,
       message: "Something went wrong",
-    };
+    } satisfies ApiError;
   }
 };
