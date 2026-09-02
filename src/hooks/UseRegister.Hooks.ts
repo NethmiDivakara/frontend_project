@@ -61,6 +61,8 @@ export function useRegister() {
 
       localStorage.setItem("access_token", auth.access_token);
       localStorage.setItem("refresh_token", auth.refresh_token);
+      localStorage.setItem("access_expires_at", auth.expires_at);
+      localStorage.setItem("refresh_expires_at", auth.refresh_expires_at);
       localStorage.setItem("user", JSON.stringify(user));
 
       setSuccessMessage("Successful registration!");
@@ -69,7 +71,12 @@ export function useRegister() {
         navigate("/dashboard");
       }
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Something went wrong.");
+      const message =
+        typeof err === "object" && err !== null && "message" in err
+          ? String((err as { message?: string }).message)
+          : "Registration failed.";
+
+      setSubmitError(message || "Registration failed.");
     } finally {
       setIsSubmitting(false);
     }
