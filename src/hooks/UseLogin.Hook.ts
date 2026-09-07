@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/AuthConfig.Service";
+import { saveAuthSession } from "../services/Interceptors.Services";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -28,8 +29,7 @@ export function useLogin() {
       const { user, auth } = response.data;
 
       
-      localStorage.setItem("access_token", auth.access_token);
-      localStorage.setItem("refresh_token", auth.refresh_token);
+      saveAuthSession(auth);
       localStorage.setItem("user", JSON.stringify(user));
 
 

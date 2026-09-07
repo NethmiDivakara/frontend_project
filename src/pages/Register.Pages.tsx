@@ -49,13 +49,14 @@ export function Register() {
 <div className="grid grid-cols-2 gap-4 ">
  <div className="space-y-1.5">
             <Label htmlFor="name" className="text-sm font-medium text-neutral-200">
-              Name
+              Name *
             </Label>
             <Input
               id="name"
               type="text"
               placeholder="Enter your name"
               value={values.name}
+              required
               onChange={(e) => setName(e.target.value)}
               aria-invalid={!!errors.name}
               className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -64,13 +65,14 @@ export function Register() {
           </div>
                     <div className="space-y-1.5">
             <Label htmlFor="phoneNumber" className="text-sm font-medium text-neutral-200">
-              Phone Number
+              Phone Number *
             </Label>
             <Input
               id="phoneNumber"
               type="tel"
               placeholder="Enter your phone number"
               value={values.phoneNumber}
+              required
               onChange={(e) => setPhoneNumber(e.target.value)}
               aria-invalid={!!errors.phoneNumber}
               className="h-12 rounded-full border-0 bg-white px-4 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -84,13 +86,14 @@ export function Register() {
  
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium text-neutral-200 ">
-              Email
+              Email *
             </Label>
             <Input
               id="email"
               type="email"
               placeholder="Enter your email"
               value={values.email}
+              required
               onChange={(e) => setEmail(e.target.value)}
               aria-invalid={!!errors.email}
               className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -103,13 +106,14 @@ export function Register() {
 
            <div className="space-y-2">
             <Label htmlFor="address" className="text-sm font-medium text-neutral-200">
-              Address
+              Address *
             </Label>
             <Input
               id="address"
               type="text"
               placeholder="Enter your address"
               value={values.address}
+              required
               onChange={(e) => setAddress(e.target.value)}
               aria-invalid={!!errors.address}
               className="h-12 rounded-full border-0 bg-white px-5 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -121,7 +125,7 @@ export function Register() {
  
           <div className="space-y-2">
              <Label htmlFor="password" className="text-sm font-medium text-neutral-200">
-              Set Password
+              Set Password *
             </Label>
             <div className="relative">
               <Input
@@ -129,6 +133,7 @@ export function Register() {
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
                 value={values.password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
                 className="h-12 rounded-full border-0 bg-white px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -155,7 +160,7 @@ export function Register() {
  
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-sm font-medium text-neutral-200">
-              Confirm Password
+              Confirm Password *
             </Label>
             <div className="relative">
               <Input
@@ -163,6 +168,7 @@ export function Register() {
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="********"
                 value={values.confirmPassword}
+                required
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 aria-invalid={!!errors.confirmPassword}
                 className="h-12 rounded-full border-0 bg-white px-5 pr-12 text-sm placeholder:text-neutral-400 focus-visible:ring-2 focus-visible:ring-sky-400"

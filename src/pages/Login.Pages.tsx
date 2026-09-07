@@ -49,6 +49,7 @@ export function Login() {
               type="email"
               placeholder="Enter your email"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-lg border border-neutral-100 px-4 py-2  focus:border-blue-500 focus:outline-none bg-white"
             />
@@ -64,6 +65,7 @@ export function Login() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 value={password}
+                  required
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border border-neutral-300 px-4 py-2 pr-10 text-neutral-900 focus:border-blue-500 focus:outline-none bg-white"
               />

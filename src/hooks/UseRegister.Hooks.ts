@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../services/AuthConfig.Service";
+import { saveAuthSession } from "../services/Interceptors.Services";
 import {
   validateRegisterForm,
   type RegisterFormErrors,
@@ -59,10 +60,7 @@ export function useRegister() {
 
       const { user, auth } = responseOfRegister.data;
 
-      localStorage.setItem("access_token", auth.access_token);
-      localStorage.setItem("refresh_token", auth.refresh_token);
-      localStorage.setItem("access_expires_at", auth.expires_at);
-      localStorage.setItem("refresh_expires_at", auth.refresh_expires_at);
+      saveAuthSession(auth);
       localStorage.setItem("user", JSON.stringify(user));
 
       setSuccessMessage("Successful registration!");

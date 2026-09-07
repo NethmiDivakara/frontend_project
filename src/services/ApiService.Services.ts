@@ -1,7 +1,8 @@
-import axios from "axios";
-import type { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 import config from "./ApiConfig.Services";
 import type { AxiosObject } from "../types/Axios.Types";
+import PrivateApi from "./PrivateApi.Services";
+import PublicApi from "./PublicApi.Services";
 
 const API_TIMEOUT_MS = 10000;
 
@@ -19,7 +20,7 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
       : "application/json",
     ...apiObject.headers,
   };
-  const requestConfig = { 
+  const requestConfig = {
     headers, 
     timeout: API_TIMEOUT_MS,
     withCredentials: apiObject.withCredentials ?? false,
@@ -30,22 +31,25 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
     : `${config.serverUrl}/${apiObject.endpoint.replace(/^\//, "")}`;
 
   try {
-   let response: AxiosResponse<T>;
+    let response: AxiosResponse<T>;
+    const apiInstance = apiObject.requiresAuth ?? apiObject.authentication
+      ? PrivateApi
+      : PublicApi;
     switch (method) {
       case "get":
-        response = await axios.get<T>(url, requestConfig);
+        response = await apiInstance.get<T>(url, requestConfig);
         break;
       case "post":
-        response = await axios.post<T>(url, body, requestConfig);
+        response = await apiInstance.post<T>(url, body, requestConfig);
         break;
       case "put":
-        response = await axios.put<T>(url, body, requestConfig);
+        response = await apiInstance.put<T>(url, body, requestConfig);
         break;
       case "patch":
-        response = await axios.patch<T>(url, body, requestConfig);
+        response = await apiInstance.patch<T>(url, body, requestConfig);
         break;
       case "delete":
-        response = await axios.delete<T>(url, requestConfig);
+        response = await apiInstance.delete<T>(url, requestConfig);
         break;
       default:
         throw new Error(`Unsupported HTTP method: ${apiObject.method}`);
@@ -53,7 +57,6 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
 
     return response.data;
   } catch (error: unknown) {
-
     if (axios.isAxiosError<{ message?: string }>(error)) {
       const axiosError = error;
       const status = axiosError.response?.status ?? 500;
@@ -64,6 +67,15 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
         status,
         data,
         message: data?.message || axiosError.message || "Something went wrong",
+      };
+    }
+
+    if (error instanceof Error) {
+      throw {
+        success: false,
+        status: 401,
+        data: null,
+        message: error.message,
       };
     }
 

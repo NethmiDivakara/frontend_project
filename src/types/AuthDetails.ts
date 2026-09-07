@@ -54,3 +54,24 @@ export type RegisterResponse = {
     auth: AuthTokens;
   };
 };
+
+export type RefreshTokenPayload = {
+  refresh_token: string;
+};
+
+export type RefreshTokenResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    auth: AuthTokens;
+  };
+};
+
+export type LogoutPayload = {
+  refresh_token: string;
+};
+
+export type LogoutResponse = {
+  success: boolean;
+  message: string;
+};

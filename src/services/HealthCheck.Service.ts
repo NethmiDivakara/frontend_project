@@ -6,7 +6,8 @@ import type {HealthResponse} from '../types/HealthDetails'
 export async function healthCheck(): Promise<HealthResponse> {
   const apiObject: AxiosObject = {
     method: "GET",
-    endpoint: "health",
+    endpoint: "auth/me",
+    requiresAuth: true,
   };
 
  return callApi<HealthResponse>(apiObject);
