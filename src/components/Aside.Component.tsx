@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom"
-import { LayoutGrid, Store, Boxes } from "lucide-react"
+import { LayoutGrid, Store, Boxes,ShoppingBasket } from "lucide-react"
 import { cn } from "@/lib/Utils.Lib"
 import { Navbar } from "@/components/NavBar.Component"
 import {
@@ -15,8 +15,9 @@ import {
 } from "./ui/sidebar"
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutGrid, path: "/" },
+  { label: "Dashboard", icon: LayoutGrid, path: "/dashboard" },
   { label: "Products", icon: Store, path: "/products" },
+  { label: "Store", icon: ShoppingBasket, path: "/store" }
 
 ] as const
 
@@ -39,15 +40,15 @@ export function Aside() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map(({ label, icon: Icon, path }) => {
-                const isActive = path === "/"
-                  ? location.pathname === "/"
+                const isActive = path === "/dashboard"
+                  ? location.pathname === "/dashboard"
                   : location.pathname.startsWith(path)
 
                 return (
                   <SidebarMenuItem key={label}>
                     <SidebarMenuButton
                       isActive={isActive}
-                      render={<NavLink to={path} end={path === "/"} />}
+                      render={<NavLink to={path} end={path === "/dashboard"} />}
                       className={cn(
                         "relative h-10 gap-3 px-3 text-white/70 hover:bg-white/10 hover:text-white",
                         "data-active:bg-white/15 data-active:text-white data-active:before:absolute data-active:before:left-0 data-active:before:h-5 data-active:before:w-1 data-active:before:rounded-r-full data-active:before:bg-cyan-300"
@@ -74,10 +75,14 @@ export function AppLayout() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-[var(--bg)]">
-        <Aside />
+        <div className="sticky top-0 h-screen">
+          <Aside />
+        </div>
         <div className="flex min-w-0 flex-1 flex-col">
-          <Navbar />
-          <main className="flex flex-1 flex-col">
+          <div className="sticky top-0 z-10">
+            <Navbar />
+          </div>
+          <main className="flex flex-1 flex-col overflow-y-auto">
             <Outlet />
           </main>
         </div>

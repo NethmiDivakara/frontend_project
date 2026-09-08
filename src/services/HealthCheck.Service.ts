@@ -1,5 +1,5 @@
 import {callApi} from './ApiService.Services'
-import type {AxiosObject} from '../types/Axios.Types'
+import type {AxiosObject} from '../types/AxiosObject.Types'
 import type {HealthResponse} from '../types/HealthDetails'
 
 

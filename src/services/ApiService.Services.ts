@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import config from "./ApiConfig.Services";
-import type { AxiosObject } from "../types/Axios.Types";
+import type { AxiosObject } from "../types/AxiosObject.Types";
 import PrivateApi from "./PrivateApi.Services";
 import PublicApi from "./PublicApi.Services";
 
@@ -13,11 +13,16 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
   const body = ["post", "put", "patch","delete"].includes(method) 
   ? apiObject.body 
   : undefined;
+ const isFormData = body instanceof FormData;
 
   const headers = {
-    "Content-Type": apiObject.urlencoded
-      ? "application/x-www-form-urlencoded"
-      : "application/json",
+    ...(isFormData
+      ? {}
+      : {
+          "Content-Type": apiObject.urlencoded
+            ? "application/x-www-form-urlencoded"
+            : "application/json",
+        }),
     ...apiObject.headers,
   };
   const requestConfig = {
@@ -61,12 +66,15 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
       const axiosError = error;
       const status = axiosError.response?.status ?? 500;
       const data = axiosError.response?.data;
+      const validationErrors = data && typeof data === "object" && "errors" in data
+        ? Object.values(data.errors as Record<string, string[]>).flat().join(" ")
+        : "";
 
       throw {
         success: false,
         status,
         data,
-        message: data?.message || axiosError.message || "Something went wrong",
+        message: validationErrors || data?.message || axiosError.message || "Something went wrong",
       };
     }
 

@@ -6,21 +6,18 @@ import {Login }from "../pages/Login.Pages";
 import { AppLayout } from "../components/Aside.Component"
 import {
     clearAuthSession,
-    isTokenExpired,
 } from "../services/Interceptors.Services";
 
 function ProtectedRoute() {
     const hasInvalidSession = () => {
         const accessToken = localStorage.getItem("access_token");
         const refreshToken = localStorage.getItem("refresh_token");
-        const user = localStorage.getItem("user");
+    
 
         return (
             !accessToken ||
-            !refreshToken ||
-            !user ||
-            isTokenExpired(localStorage.getItem("access_expires_at")) ||
-            isTokenExpired(localStorage.getItem("refresh_expires_at"))
+            !refreshToken 
+           
         );
     };
 

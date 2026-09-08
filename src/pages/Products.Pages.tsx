@@ -1,10 +1,9 @@
-import { useState } from "react"
-import { PackageSearch, Search } from "lucide-react"
+import { useState,useCallback,useRef } from "react"
+import { PackageSearch } from "lucide-react"
 import {
   Card,
   CardContent,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -22,24 +21,47 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { useProducts } from "@/hooks/UseGetProducts.Hooks"
-import { AddProductsForm } from "@/components/AddProductsForm.Component"
+import { AddProductsButton } from "@/components/AddProductsButtonComponent"
+import { ProductActions } from "@/components/ProductActions.Component"
+import { DebouncedSearch } from "@/components/DebouncedSearch.Component"
+import { CreateProduct } from "@/services/Products.Service"
+import type { ProductInput } from '../types/ProductDetails'
 
 
 const ProductsPerPage = 6
 
 export function ProductsPage() {
   const [page, setPage] = useState(1)
-  const { products, isLoading, error } = useProducts()
   const [search, setSearch] = useState("")
-  const visibleProducts = products.filter((product) => {
-    const query = search.toLowerCase().trim()
-    return !query || `${product.name} ${product.sku} ${product.category?.name ?? ""}`.toLowerCase().includes(query)
+  const previousSearchRef = useRef("")
+
+  const { products, isLoading, error, reload } = useProducts({
+    sort_by: "price",
+    sort_order: "asc",
   })
+
+    const handleSearch = useCallback((value:string) => {
+    setSearch(value)
+    if (value !== previousSearchRef.current) {
+      setPage(1)
+    }
+    previousSearchRef.current = value
+  }, [])
+
+  const visibleProducts = products.filter((product) =>
+    !search || product.name.toLowerCase().startsWith(search.toLowerCase())
+  )
+
   const totalPages = Math.ceil(visibleProducts.length / ProductsPerPage)
   const paginatedProducts = visibleProducts.slice(
     (page - 1) * ProductsPerPage,
     page * ProductsPerPage,
   )
+
+  function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  return text.slice(0, maxLength) + "..."
+}
 
   return (
     <section className="flex-1 bg-[var(--bg)] px-6 py-8 md:px-10">
@@ -50,18 +72,13 @@ export function ProductsPage() {
             <h2 className="mt-1 text-3xl font-semibold tracking-tight text-[var(--text)]">Products ({visibleProducts.length})</h2>
             <p className="mt-2 text-sm text-[var(--muted-text)]">Browse and manage your product catalog.</p>
           </div>
-          <div className="relative w-full md:max-w-xs">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value)
-                setPage(1)
-              }}
-              placeholder="Search products"
-              className="h-10 pl-9"
-            />
-          </div>
+          
+          <DebouncedSearch onSearch={handleSearch} />
+        </div>
+ 
+
+        <div className="flex justify-end">
+          <AddProductsButton onSaved={async (product: ProductInput) => { await CreateProduct(product); reload() }} />
         </div>
 
         {isLoading && (
@@ -95,21 +112,22 @@ export function ProductsPage() {
         {!isLoading && !error && visibleProducts.length > 0 && (
           
         <div className="overflow-x-auto rounded-lg border">
-            <div className="flex justify-end px-4 pt-3">
-              <AddProductsForm />
-            </div>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
                   <TableHead>Category</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">Stock</TableHead>
+                  <TableHead className="text-center">Description</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead className="text-center">Compare Price</TableHead>
+                  <TableHead className="text-center">Stock</TableHead>
+                   <TableHead className="text-center">is_featured</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow> 
               </TableHeader>
               <TableBody>
+
                 {paginatedProducts.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -132,15 +150,21 @@ export function ProductsPage() {
                      
                     </TableCell>
                     <TableCell>{product.category?.name ?? "Uncategorized"}</TableCell>
-                    <TableCell className="font-mono text-xs">{product.sku}</TableCell>
+                    <TableCell className="font-mono text-xs">{truncate(product.description, 40)}</TableCell>
                     <TableCell className="text-right font-medium">${product.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-right font-medium">{product.compare_price?.toFixed(2)}</TableCell>
                     <TableCell className="text-right">{product.stock_quantity}</TableCell>
+                    <TableCell className="text-right">{product.is_featured ? "Yes" : "No"}</TableCell>
                     <TableCell>
                       <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
                         {product.in_stock 
                         ? "In stock" 
                         : "Out of stock"}
                       </span>
+                    </TableCell>
+                    <TableCell>
+
+                      <ProductActions product={product} onSaved={async () => reload()} />
                     </TableCell>
                   </TableRow>
                 ))}

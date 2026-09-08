@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/products": "Products",
+  "/store": "Store",
 };
 
 export function Navbar() {

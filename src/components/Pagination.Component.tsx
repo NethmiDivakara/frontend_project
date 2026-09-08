@@ -1,5 +1,5 @@
 import {
-  Pagination,
+  Pagination as PaginationContainer,
   PaginationContent,
   PaginationItem,
   PaginationLink,
@@ -7,9 +7,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-export function PaginationDemo() {
+export function Pagination() {
   return (
-    <Pagination>
+    <PaginationContainer>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious href="#" />
@@ -21,6 +21,6 @@ export function PaginationDemo() {
           <PaginationNext href="#" />
         </PaginationItem>
       </PaginationContent>
-    </Pagination>
+    </PaginationContainer>
   )
 }
