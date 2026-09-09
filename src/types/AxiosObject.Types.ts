@@ -11,4 +11,5 @@ export interface AxiosObject {
     isBaseAuth?: boolean;
     state?: string;
     tokenRenewed?:boolean;
+    files?: File[];
 }

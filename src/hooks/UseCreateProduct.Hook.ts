@@ -6,11 +6,11 @@ export function useAddProduct() {
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const addProduct = async (product: ProductInput): Promise<GetProductResponse> => {
+  const addProduct = async (product: ProductInput, thumbnailFile?: File | null): Promise<GetProductResponse> => {
     setIsAdding(true)
     setError(null)
     try {
-      return await CreateProduct(product)
+      return await CreateProduct(product, thumbnailFile)
     } catch (requestError) {
       const message = requestError instanceof Error ? requestError.message : "Unable to add product"
       setError(message)

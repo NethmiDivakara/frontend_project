@@ -36,7 +36,7 @@ export function ProductActions({ product, onSaved }: { product: Products; onSave
                 is_featured: product.is_featured,
               })
               await onSaved()
-              toast.success("Product restored.")
+              toast.success("Product restored (image needs to be re-added).")
             } catch (error) {
               toast.error(error instanceof Error ? error.message : "Unable to restore product.")
             }
@@ -64,8 +64,8 @@ export function ProductActions({ product, onSaved }: { product: Products; onSave
       <ProductFormDialog
         product={product}
         mode="edit"
-        onSave={async (values) => {
-          await updateProduct(product.id, values)
+        onSave={async (values, thumbnailFile) => {
+          await updateProduct(product.id, values, thumbnailFile)
           await onSaved()
         }}
         trigger={

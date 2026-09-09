@@ -1,6 +1,7 @@
 import {Routes,Route,Navigate,Outlet} from "react-router-dom"
 import Dashboard from "../pages/Dashboard.Pages"
 import { ProductsPage } from "../pages/Products.Pages"
+import { StorePage } from "../pages/Store.Pages"
 import {Register} from "../pages/Register.Pages"
 import {Login }from "../pages/Login.Pages";
 import { AppLayout } from "../components/Aside.Component"
@@ -38,6 +39,7 @@ export default function Routing (){
                 <Route element={<AppLayout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/products" element={<ProductsPage />} />
+                    <Route path="/store" element={<StorePage />} />
                 </Route>
             </Route>
             <Route path= "/login" element={<Login/>}/>

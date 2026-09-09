@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type ReactElement } from "react"
+import { useEffect, useState, type ChangeEvent, type ReactElement } from "react"
 import type { Products, ProductInput } from "@/types/ProductDetails"
 import {
   Dialog,
@@ -15,6 +15,7 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Button } from "./ui/button"
 import { Checkbox } from "./ui/checkbox"
+import { PackageSearch } from "lucide-react"
 
 type ProductFormValues = {
   categoryId: string
@@ -25,7 +26,8 @@ type ProductFormValues = {
   stockQuantity: string
   status: string
   isFeatured: boolean
-  thumbnail: string
+  thumbnailFile: File | null
+  thumbnailPreview: string
 }
 
 const emptyValues: ProductFormValues = {
@@ -37,7 +39,8 @@ const emptyValues: ProductFormValues = {
   stockQuantity: "0",
   status: "active",
   isFeatured: false,
-  thumbnail: "",
+  thumbnailFile: null,
+  thumbnailPreview: "",
 }
 
 function productToValues(product?: Products): ProductFormValues {
@@ -52,7 +55,8 @@ function productToValues(product?: Products): ProductFormValues {
     stockQuantity: String(product.stock_quantity),
     status: product.status,
     isFeatured: product.is_featured,
-    thumbnail: product.thumbnail,
+    thumbnailFile: null,
+    thumbnailPreview: product.thumbnail_url ?? "",
   }
 }
 
@@ -67,6 +71,38 @@ function valuesToProduct(values: ProductFormValues): ProductInput {
     status: values.status,
     is_featured: values.isFeatured,
   }
+}
+
+function ThumbnailField({
+  preview,
+  readOnly,
+  onFileSelect,
+}: {
+  preview: string
+  readOnly: boolean
+  onFileSelect: (file: File | null) => void
+}) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onFileSelect(event.target.files?.[0] ?? null)
+  }
+
+  return (
+    <Field>
+      <div className="flex h-40 w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
+        {preview ? (
+          <img src={preview} alt="Product thumbnail" className="h-full w-full object-cover" />
+        ) : (
+          <PackageSearch className="size-10 text-muted-foreground" />
+        )}
+      </div>
+      {!readOnly && (
+        <>
+          <Label htmlFor="thumbnail">Thumbnail</Label>
+          <Input id="thumbnail" type="file" accept="image/*" onChange={handleChange} />
+        </>
+      )}
+    </Field>
+  )
 }
 
 function ProductFields({
@@ -104,12 +140,11 @@ function ProductFields({
           <option value="4">Sports &amp; Fitness</option>
         </select>
       </Field>
-  
-    <Field>
-      <Label htmlFor="description">Description</Label>
-      <Input id="description" value={values.description} onChange={update("description")} readOnly={readOnly} required={!readOnly} placeholder="Enter product description" />
-    
-      </Field>  
+
+      <Field>
+        <Label htmlFor="description">Description</Label>
+        <Input id="description" value={values.description} onChange={update("description")} readOnly={readOnly} required={!readOnly} placeholder="Enter product description" />
+      </Field>
       <div className="grid grid-cols-2 gap-3">
         <Field>
           <Label htmlFor="price">Price</Label>
@@ -133,10 +168,6 @@ function ProductFields({
           <Input id="status" value={values.status} onChange={update("status")} readOnly={readOnly} required={!readOnly} />
         </Field>
       </div>
-      <Field>
-        <Label htmlFor="thumbnail">Thumbnail (optional)</Label>
-        <Input id="thumbnail" value={values.thumbnail} onChange={update("thumbnail")} readOnly={readOnly} placeholder="Enter thumbnail URL (optional)" />
-      </Field>
       <label className="flex items-center gap-2 text-sm">
         <Checkbox checked={values.isFeatured} onCheckedChange={(checked) => onChange("isFeatured", checked === true)} disabled={readOnly} />
         Featured product
@@ -154,16 +185,34 @@ export function ProductFormDialog({
   product?: Products
   mode: "add" | "view" | "edit"
   trigger: ReactElement
-  onSave?: (product: ProductInput) => Promise<void>
+  onSave?: (product: ProductInput, thumbnailFile?: File | null) => Promise<void>
 }) {
   const [open, setOpen] = useState(false)
   const [values, setValues] = useState(() => productToValues(product))
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const readOnly = mode === "view"
+
   const updateValue = (field: keyof ProductFormValues, value: string | boolean) => {
     setValues((current) => ({ ...current, [field]: value }))
   }
+
+  const handleThumbnailChange = (file: File | null) => {
+    setValues((current) => ({
+      ...current,
+      thumbnailFile: file,
+      thumbnailPreview: file ? URL.createObjectURL(file) : current.thumbnailPreview,
+    }))
+  }
+
+  useEffect(() => {
+    const preview = values.thumbnailPreview
+    return () => {
+      if (preview.startsWith("blob:")) {
+        URL.revokeObjectURL(preview)
+      }
+    }
+  }, [values.thumbnailPreview])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -179,7 +228,7 @@ export function ProductFormDialog({
     setIsSaving(true)
     setSaveError(null)
     try {
-      await onSave(valuesToProduct(values))
+      await onSave(valuesToProduct(values), values.thumbnailFile)
       setOpen(false)
     } catch (error) {
       if (error instanceof Error) {
@@ -202,9 +251,18 @@ export function ProductFormDialog({
           <DialogHeader>
             <DialogTitle>{mode === "add" ? "Add product" : mode === "view" ? "View product" : "Edit product"}</DialogTitle>
             <DialogDescription>
-                {mode === "add" ? "Add product details. A thumbnail is optional." : `Product details for ${product?.name ?? "this product"}.`}
+              {mode === "add" ? "Add product details. A thumbnail is optional." : `Product details for ${product?.name ?? "this product"}.`}
             </DialogDescription>
           </DialogHeader>
+
+          <FieldGroup>
+            <ThumbnailField
+              preview={values.thumbnailPreview}
+              readOnly={readOnly}
+              onFileSelect={handleThumbnailChange}
+            />
+          </FieldGroup>
+
           <ProductFields values={values} readOnly={readOnly} onChange={updateValue} />
           {saveError && <p className="text-sm text-destructive">{saveError}</p>}
           <DialogFooter>

@@ -8,16 +8,39 @@ const API_TIMEOUT_MS = 10000;
 
 export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
   const method = apiObject.method 
-  ? apiObject.method.toLowerCase() 
-  : "get";
-  const body = ["post", "put", "patch","delete"].includes(method) 
-  ? apiObject.body 
-  : undefined;
- const isFormData = body instanceof FormData;
+    ? apiObject.method.toLowerCase() 
+    : "get";
+    
+  let requestBody = ["post", "put", "patch", "delete"].includes(method) 
+    ? apiObject.body 
+    : undefined;
+
+  
+  if (apiObject.files && apiObject.files.length > 0) {
+    const formData = new FormData();
+
+    if (requestBody && typeof requestBody === 'object') {
+      Object.entries(requestBody).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+    }
+
+    
+    apiObject.files.forEach((file) => {
+      formData.append("thumbnail", file); 
+    });
+
+    
+    requestBody = formData;
+  }
+
+  const isFormData = requestBody instanceof FormData;
 
   const headers = {
     ...(isFormData
-      ? {}
+      ? {} 
       : {
           "Content-Type": apiObject.urlencoded
             ? "application/x-www-form-urlencoded"
@@ -25,6 +48,7 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
         }),
     ...apiObject.headers,
   };
+  
   const requestConfig = {
     headers, 
     timeout: API_TIMEOUT_MS,
@@ -40,18 +64,19 @@ export const callApi = async <T>(apiObject: AxiosObject): Promise<T> => {
     const apiInstance = apiObject.requiresAuth ?? apiObject.authentication
       ? PrivateApi
       : PublicApi;
+      
     switch (method) {
       case "get":
         response = await apiInstance.get<T>(url, requestConfig);
         break;
       case "post":
-        response = await apiInstance.post<T>(url, body, requestConfig);
+        response = await apiInstance.post<T>(url, requestBody, requestConfig);
         break;
       case "put":
-        response = await apiInstance.put<T>(url, body, requestConfig);
+        response = await apiInstance.put<T>(url, requestBody, requestConfig);
         break;
       case "patch":
-        response = await apiInstance.patch<T>(url, body, requestConfig);
+        response = await apiInstance.patch<T>(url, requestBody, requestConfig);
         break;
       case "delete":
         response = await apiInstance.delete<T>(url, requestConfig);

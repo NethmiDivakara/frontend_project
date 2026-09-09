@@ -20,21 +20,23 @@ export async function Products(query: ProductQuery = {}): Promise<GetProductsRes
   return callApi<GetProductsResponse>(apiObject)
 }
 
-export async function CreateProduct(product: ProductInput): Promise<GetProductResponse> {
+export async function CreateProduct(product: ProductInput, thumbnailFile?: File | null): Promise<GetProductResponse> {
   return callApi<GetProductResponse>({
     method: "POST",
     endpoint: "products",
     requiresAuth: true,
     body: product,
+    files: thumbnailFile ? [thumbnailFile] : undefined,
   })
 }
 
-export async function EditProduct(id: number, product: ProductInput): Promise<GetProductResponse> {
+export async function EditProduct(id: number, product: ProductInput, thumbnailFile?: File | null): Promise<GetProductResponse> {
   return callApi<GetProductResponse>({
     method: "PUT",
     endpoint: `products/${id}`,
     requiresAuth: true,
     body: product,
+    files: thumbnailFile ? [thumbnailFile] : undefined,
   })
 }
 
